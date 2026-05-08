@@ -576,13 +576,14 @@ export default function Home() {
     } else {
       // Fallback: pull IDs from stray inline refs like [n1, n2]
       const inlineIds = new Set<string>();
-      for (const m of text.matchAll(INLINE_NOTE_REF_RE)) {
-        m[0].replace(/[\[\(（\]\)）]/g, "")
+      Array.from(text.matchAll(INLINE_NOTE_REF_RE)).forEach((m) => {
+        m[0]
+          .replace(/[\[\(（\]\)）]/g, "")
           .split(/[,，、]/)
           .map((s) => s.trim())
           .filter(Boolean)
           .forEach((id) => inlineIds.add(id));
-      }
+      });
       cards = Array.from(inlineIds)
         .map((id) => mockNotes.find((n) => n.id === id))
         .filter(Boolean) as NoteCard[];

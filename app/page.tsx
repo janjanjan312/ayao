@@ -55,22 +55,14 @@ const DEMO_STEPS = [
   },
   {
     step: 3,
-    title: "聚焦决策方向",
-    ability: "142篇笔记，根据偏好筛出选项",
-    why: "• 收集用户偏好，聚焦到少数选项上\n• 社区共识：笔记加权聚合为推荐/避雷票数",
-    advantage: "社区共识",
-    color: "#2ECC71",
-  },
-  {
-    step: 4,
-    title: "主动避坑",
-    ability: "识别偏好和信息的矛盾之处",
-    why: "• 识别前后矛盾信息，提供解决方案",
+    title: "识别矛盾，聚焦方向",
+    ability: "识别信息矛盾，聚焦具体行程方向",
+    why: "• 识别前后矛盾信息，提供解决方案\n• 社区共识：笔记加权聚合为推荐 / 避雷票数\n• 收集用户偏好，聚焦到少数选项",
     advantage: "专家思维",
     color: "#FF2442",
   },
   {
-    step: 5,
+    step: 4,
     title: "输出行程规划",
     ability: "每个推荐都有笔记来源",
     why: "• 推荐到具体POI点位，结合本地生活生态\n• 多步 Agent + 门店POI 链接",
@@ -78,7 +70,7 @@ const DEMO_STEPS = [
     color: "#2ECC71",
   },
   {
-    step: 6,
+    step: 5,
     title: "细节调整，导出为笔记草稿",
     ability: "随时修改，持续优化行程",
     why: "• 根据反馈持续迭代，结构化输出\n• 一键保存到草稿箱，便于查看和笔记发布",
@@ -326,7 +318,7 @@ function FreeInput({ onSend, loading, currentStep }: { onSend: (text: string) =>
         value={value}
         onChange={(e) => setValue(e.target.value)}
         onKeyDown={(e) => e.key === "Enter" && handleSend()}
-        placeholder={currentStep === 5 ? "试试：我第一天也想去咖啡店或者书店..." : "继续问阿遥..."}
+        placeholder={currentStep === 4 ? "试试：我第一天也想去咖啡店或者书店..." : "继续问阿遥..."}
         style={{
           flex: 1,
           background: "#F5F0EE",
@@ -600,7 +592,7 @@ export default function Home() {
 
   const sendMessage = async (userText: string) => {
     if (loading) return;
-    if (currentStep === 5) setCurrentStep(6);
+    if (currentStep === 4) setCurrentStep(5);
 
     // Add user message
     const newUserMsg: Message = { role: "user", content: userText };
@@ -628,7 +620,7 @@ export default function Home() {
       const { cards, compare, showExport } = extractMetadata(text);
       const { clean } = parseResponse(text, cards, compare, showExport);
 
-      if (showExport) setCurrentStep((prev) => (prev < 5 ? 5 : prev));
+      if (showExport) setCurrentStep((prev) => (prev < 4 ? 4 : prev));
 
       const assistantMsg: Message = {
         role: "assistant",
@@ -673,8 +665,8 @@ export default function Home() {
       }, 600);
     } else {
       if (demoIndex === 1) setCurrentStep(2); // 五一 → 实时洞察
-      if (demoIndex === 2) setCurrentStep(3); // 5天骑行 → 聚合决策
-      if (demoIndex === 3) setCurrentStep(4); // 以大理为基地吧 → 主动追问+避坑
+      if (demoIndex === 2) setCurrentStep(3); // 5天骑行 → 识别矛盾，聚焦方向
+      // demoIndex 3 "以大理为基地吧" 依然在 step 3，等 AI 输出 [SHOW_EXPORT] 触发 step 4
       await sendMessage(text);
     }
   };
